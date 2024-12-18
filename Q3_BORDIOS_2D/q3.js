@@ -1,159 +1,144 @@
-const users = {
-    "ticket1": "password517",
-    "ticket2": "password715",
-    // Add more ticket person users here...
+// Object to store seller usernames and passwords.
+const users = {  
+    "seller": "pass777", 
+    // Add more sellers here...
 };
 
-const buses = [
-    { location: "Cubao", seats: new Array(15).fill(null) },
-    { location: "Baguio", seats: new Array(15).fill(null) },
-    { location: "Pasay", seats: new Array(15).fill(null) },
-];
+// Object to hold the menu items in each categorized food according to their name and price
+const menu = { 
+    "Pasta": [
+        { name: "Carbonara", price: 130 },
+        { name: "Spaghetti", price: 100 },
+        { name: "Ravioli", price: 150 },
+    ],
+    "Desserts": [
+        { name: "Muffins", price: 50 },
+        { name: "Chocolate Cake", price: 70 },
+        { name: "Ice Cream", price: 30 },
+    ],
+    "Drinks": [
+        { name: "Coca-Cola", price: 53 },
+        { name: "Blueberry Fruit Tea", price: 90 },
+        { name: "Lemonade", price: 50 },
+    ],
+};
 
-// Function to authenticate ticket person login.
-function authenticateTicketPerson(username, password) {
-    return users[username] === password;
+// Array to store the customer's cart.
+let cart = []; 
+
+// Function for seller authentication.
+function sellerLogin() { 
+    const username = prompt("Enter username:");
+    const password = prompt("Enter password:");
+    return users[username] === password; // Returns true if login is successful
 }
 
-
-// Function to display bus information.
-function displayBuses(showPassengers = false) {
-    buses.forEach((bus, index) => {
-        console.log(`\nBus ${index + 1}: ${bus.location}`);
-        if (showPassengers) {
-            bus.seats.forEach((passenger, seat) => {
-                console.log(`Seat ${seat + 1}: ${passenger || "AVAILABLE"}`);
-            });
-        }
-    });
-}
-
-
-// Function to manage bus reservations
-function manageBusReservations() {
-    const busIndex = prompt("Enter bus number to manage (1-3):") - 1;
-    if (busIndex >= 0 && busIndex < buses.length) {
-        let action;
-        do {
-            action = prompt("Choose action: ADD, REMOVE, CANCEL:").toUpperCase();
-            switch (action) {
-                case "ADD":
-                    addReservation(busIndex);
-                    break;
-                case "REMOVE":
-                    removeReservation(busIndex);
-                    break;
-                case "CANCEL":
-                    break;
-                default:
-                    alert("Invalid action.");
-            }
-        } while (action !== "CANCEL");
+// Function to add a new item to the menu.
+function addItem() { 
+    const category = prompt("Enter category to add item to:");
+    if (menu[category]) { // To check if the category exists
+        const name = prompt("Enter item name:");
+        const price = parseFloat(prompt("Enter price:"));
+        menu[category].push({ name, price }); // Add the new item to the category
+        alert("Item added successfully!");
     } else {
-        alert("Invalid bus number.");
+        alert("Not found.");
     }
 }
 
-// Function to add a reservation
-function addReservation(busIndex) {
-    const bus = buses[busIndex];
-    const availableSeats = bus.seats.map((passenger, index) => passenger ? null : index + 1);
-
-    if(availableSeats.length === 0){
-        alert("Fully Booked");
-        return;
-    }
-
-    availableSeats.forEach(`seat => console.log(Available seat: ${seat})`);
-
-    const seatNumber = parseInt(prompt("Enter seat number to reserve:"));
-    if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber -1] === null) {
-        const customerName = prompt("Enter customer name:");
-        bus.seats[seatNumber - 1] = customerName;
-        alert("Reservation added successfully!");
+// Function to remove an item from the menu.
+function removeItem() { 
+    const category = prompt("Enter category to remove item from: ");
+    if (menu[category]) { // Check if category is exist
+        const name = prompt("Enter item name to remove:");
+        menu[category] = menu[category].filter(item => item.name !== name); // Remove the item using filter
+        alert("Item removed successfully!");
     } else {
-        alert("Invalid seat number or seat already taken.");
+        alert("Category not found.");
     }
-    //Ask if continue to add or not
 }
 
-
-// Function to remove a reservation 
-function removeReservation(busIndex) {
-    const bus = buses[busIndex];
-    const occupiedSeats = bus.seats.map((passenger, index) => passenger ? index + 1 : null).filter(seat => seat !== null);
-    if(occupiedSeats.length === 0){
-        alert("No reservations to remove");
-        return;
+// Function to display the menu to the user.
+function displayMenu() { 
+    for (const category in menu) {
+        console.log(`\n--- ${category} ---`);
+        menu[category].forEach((item, index) => {
+            console.log(`${index + 1}. ${item.name} - $${item.price.toFixed(2)}`);
+        });
     }
-    occupiedSeats.forEach(`seat => console.log(Occupied seat: ${seat})`);
-
-    const seatNumber = parseInt(prompt("Enter seat number to remove reservation from:"));
-    if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber - 1] !== null) {
-        const customerName = bus.seats[seatNumber - 1];
-        if (confirm(`Are you sure you want to remove ${customerName} reservation from seat ${seatNumber}?`)) {
-            bus.seats[seatNumber - 1] = null;
-            alert("Reservation removed successfully!");
-        }
-    } else {
-        alert("Invalid seat number or seat is not occupied.");
-    }
-    //Ask if continue to remove or not
 }
 
-
-
-// Function for customer reservation
-function customerReserve() {
-    displayBuses();
-    const busIndex = parseInt(prompt("Enter bus number to reserve (1-3):")) - 1;
-    if (busIndex >= 0 && busIndex < buses.length) {
-        const bus = buses[busIndex];
-        const availableSeats = bus.seats.map((passenger,index) => passenger ? null : index + 1).filter(seat => seat !== null);
-        if (availableSeats.length > 0) {
-            availableSeats.forEach(`seat => console.log(Available seat: ${seat})`);
-            const seatNumber = parseInt(prompt("Enter seat number to reserve:"));
-            if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber - 1] === null) {
-                const customerName = prompt("Enter customer name:");
-                bus.seats[seatNumber - 1] = customerName;
-                alert("Reservation successful!");
-            } else {
-                alert("Invalid seat number or seat already taken.");
-            }
+// Function to add an item to the customer's cart.
+function addToCart() { 
+    displayMenu();
+    const category = prompt("Enter category:");
+    if (menu[category]) {
+        const itemIndex = parseInt(prompt(`Enter item number from ${category}:`)) - 1; 
+        if (itemIndex >= 0 && itemIndex < menu[category].length) { // Validate item index
+            const quantity = parseInt(prompt("Enter quantity:"));
+            const item = menu[category][itemIndex];
+            cart.push({ ...item, quantity }); // Add item to cart with quantity
+            alert("Item added to cart!");
         } else {
-            alert("Fully booked!");
+            alert("Invalid item number.");
         }
     } else {
-        alert("Invalid bus number.");
+        alert("Category not found.");
     }
 }
 
-// Function for customer cancellation
-function customerCancelReservation() {
-    //Implementation for canceling a reservation
+// Function to remove an item from the customer's cart.
+function removeFromCart() { 
+    if (cart.length === 0) {
+        alert("Cart is empty.");
+        return;
+    }
+    cart.forEach((item, index) => {
+        console.log(`${index + 1}. ${item.name} - $${item.price.toFixed(2)} x ${item.quantity}`);
+    });
+    const itemIndex = parseInt(prompt("Enter item number to remove:")) - 1;
+    if (itemIndex >= 0 && itemIndex < cart.length) { // Validate item selection
+        cart.splice(itemIndex, 1); // Remove item from cart
+        alert("Item removed from cart!");
+    } else {
+        alert("Invalid item number.");
+    }
+}
+
+// Function to display the contents of the customer's cart.
+function printCart() { 
+    if (cart.length === 0) {
+        alert("Cart is empty.");
+        return;
+    }
+    let total = 0;
+    console.log("\nCart Contents");
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        console.log(`${item.name} - $${item.price.toFixed(2)} x ${item.quantity} = $${itemTotal.toFixed(2)}`);
+        total += itemTotal;
+    });
+    console.log(`\nTotal: $${total.toFixed(2)}`);
 }
 
 
-// Main program loop
-let role;
-do {
-    role = prompt("Are you a TICKET PERSON or CUSTOMER?").toUpperCase();
-    if (role === "TICKET PERSON") {
-        const username = prompt("Enter username:");
-        const password = prompt("Enter password:");
-        if (authenticateTicketPerson(username, password)) {
+// Main Program Loop
+let role; // Variable to store the user's role if it is a seller or customer
+do { // Main loop to handle user interaction
+    role = prompt("Are you a SELLER or CUSTOMER?").toUpperCase();
+    if (role === "SELLER") {
+        if (sellerLogin()) { // Check if  the seller is login successfully
             let action;
-            do {
-                action = prompt("Choose action: LOGOUT, VIEW, MANAGE:").toUpperCase();
+            do { // Loop for seller actions
+                action = prompt("Select action: LOGOUT, ADD, REMOVE:").toUpperCase();
                 switch (action) {
                     case "LOGOUT":
                         break;
-                    case "VIEW":
-                        displayBuses(true);
-                        if (confirm("Cancel View?")) break; //Added cancel view functionality
+                    case "ADD":
+                        addItem();
                         break;
-                    case "MANAGE":
-                        manageBusReservations();
+                    case "REMOVE":
+                        removeItem();
                         break;
                     default:
                         alert("Invalid action.");
@@ -164,14 +149,32 @@ do {
         }
     } else if (role === "CUSTOMER") {
         let action;
-        do {
-            action = prompt("Choose action: RESERVE, CANCEL RESERVATION, CANCEL:").toUpperCase();
+        do { // Loop for customer actions
+            action = prompt("Select action: ORDER, CART, CANCEL:").toUpperCase();
             switch (action) {
-                case "RESERVE":
-                    customerReserve();
+                case "ORDER":
+                    addToCart();
                     break;
-                case "CANCEL RESERVATION":
-                    customerCancelReservation();
+                case "CART":
+                    let cartAction;
+                    do { // Loop for cart actions
+                        cartAction = prompt("Select action: PRINT, ADD, REMOVE, CANCEL:").toUpperCase();
+                        switch (cartAction) {
+                            case "PRINT":
+                                printCart();
+                                break;
+                            case "ADD":
+                                addToCart();
+                                break;
+                            case "REMOVE":
+                                removeFromCart();
+                                break;
+                            case "CANCEL":
+                                break;
+                            default:
+                                alert("Invalid action.");
+                        }
+                    } while (cartAction !== "CANCEL");
                     break;
                 case "CANCEL":
                     break;
