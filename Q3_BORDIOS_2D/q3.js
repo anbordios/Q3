@@ -19,10 +19,10 @@ function authenticateTicketPerson(username, password) {
 // Function to display bus information.
 function displayBuses(showPassengers = false) {
     buses.forEach((bus, index) => {
-        console.log(\nBus ${index + 1}: ${bus.location});
+        console.log(`\nBus ${index + 1}: ${bus.location}`);
         if (showPassengers) {
             bus.seats.forEach((passenger, seat) => {
-                console.log(Seat ${seat + 1}: ${passenger || "AVAILABLE"});
+                console.log(`Seat ${seat + 1}: ${passenger || "AVAILABLE"}`);
             });
         }
     });
@@ -64,7 +64,7 @@ function addReservation(busIndex) {
         return;
     }
 
-    availableSeats.forEach(seat => console.log(Available seat: ${seat}));
+    availableSeats.forEach(`seat => console.log(Available seat: ${seat})`);
 
     const seatNumber = parseInt(prompt("Enter seat number to reserve:"));
     if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber -1] === null) {
@@ -86,12 +86,12 @@ function removeReservation(busIndex) {
         alert("No reservations to remove");
         return;
     }
-    occupiedSeats.forEach(seat => console.log(Occupied seat: ${seat}));
+    occupiedSeats.forEach(`seat => console.log(Occupied seat: ${seat})`);
 
     const seatNumber = parseInt(prompt("Enter seat number to remove reservation from:"));
     if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber - 1] !== null) {
         const customerName = bus.seats[seatNumber - 1];
-        if (confirm(Are you sure you want to remove ${customerName} reservation from seat ${seatNumber}?)) {
+        if (confirm(`Are you sure you want to remove ${customerName} reservation from seat ${seatNumber}?`)) {
             bus.seats[seatNumber - 1] = null;
             alert("Reservation removed successfully!");
         }
@@ -111,7 +111,7 @@ function customerReserve() {
         const bus = buses[busIndex];
         const availableSeats = bus.seats.map((passenger,index) => passenger ? null : index + 1).filter(seat => seat !== null);
         if (availableSeats.length > 0) {
-            availableSeats.forEach(seat => console.log(Available seat: ${seat}));
+            availableSeats.forEach(`seat => console.log(Available seat: ${seat})`);
             const seatNumber = parseInt(prompt("Enter seat number to reserve:"));
             if (seatNumber > 0 && seatNumber <= 15 && bus.seats[seatNumber - 1] === null) {
                 const customerName = prompt("Enter customer name:");
